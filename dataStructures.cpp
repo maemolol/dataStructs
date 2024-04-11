@@ -18,6 +18,7 @@ class Node {
 class LinkedList {
     public:
         Node* head;
+        int len = 0;
 
         LinkedList() {
             this->head = nullptr;
@@ -27,6 +28,7 @@ class LinkedList {
             Node* newNode = new Node(data);
             if(head == nullptr) {
                 head = newNode;
+                len++;
                 return;
             }
             Node* current = head;
@@ -34,6 +36,7 @@ class LinkedList {
                 current = current->next;
             }
             current->next = newNode;
+            len++;
         }
 
         void printList() {
@@ -113,7 +116,74 @@ class LinkedList {
         }
 };
 
-void bubbleSort(int arr[], int len) {
+class Stack: LinkedList {
+    public:
+        void push(int data) {
+            Node* newNode = new Node(data);
+            if(head == nullptr) {
+                head = newNode;
+                len++;
+                return;
+            }
+            newNode->next = head;
+            head = newNode;
+            len++;
+        }
+
+        int pop() {
+            int ret_value = head->data;
+            //Node* newNode = head;
+            head = head->next;
+            //free(newNode);
+            len--;
+            return ret_value;
+        }
+
+        bool isEmpty() {
+            return head == nullptr;
+        }
+        
+        int size() {
+            int count = 0;
+            Node* current = head;
+            while(current != nullptr) {
+                count++;
+                current = current->next;
+            }
+            return count;
+        }
+
+        int top() {
+            int ret_value = head->data;
+            return ret_value;
+        }
+
+        bool isValid(string data) {
+            Stack validity;
+
+            for (char bracket : data) {
+                if (bracket == '(' || bracket == '[' || bracket == '{') {
+                    validity.push(bracket);
+                }
+                else if (bracket == ')' || bracket == ']' || bracket == '}') {
+                    if (validity.isEmpty()) {
+                        return false;
+                    }
+                    char top = validity.top();
+                    if ((bracket == ')' && top == '(') || (bracket == ']' && top == '[') || (bracket == '}' && top == '{')) {
+                        validity.pop();
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+
+            return validity.isEmpty();
+        }
+};
+
+/* void bubbleSort(int arr[], int len) {
     int temp;
     for(int i = 0; i < len; i++) {
         for(int j = 1; j < len; j++) {
@@ -124,7 +194,7 @@ void bubbleSort(int arr[], int len) {
             }
         }
     }
-}
+} */
 
 int main() {
     LinkedList list;
@@ -137,4 +207,21 @@ int main() {
     list.printList();
     list.sortList();
     list.printList();
+
+    Stack sticc;
+    sticc.push(1);
+    sticc.push(404);
+    sticc.push(80085);
+    sticc.push(64);
+    sticc.push(-1);
+    if(sticc.isValid("{{[]}}") == true) {
+        printf("Brackets are valid.\n");
+    } else {
+        printf("Brackets are invalid.\n");
+    }
+    printf("Top: %d\n", sticc.top());
+    printf("Size: %d\n", sticc.size());
+    printf("Pop: %d\n",sticc.pop());
+    printf("Top: %d\n", sticc.top());
+    printf("Size: %d\n", sticc.size());
 }
